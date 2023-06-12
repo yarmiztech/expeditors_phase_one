@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="account_invoice_inherit" model="ir.ui.view">
+        <field name="name">account.invoice.print</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_reference']" position="after">
+                <field name="invoice_formate_type" attrs="{'readonly':[('state','!=','draft')]}"/>
+            </xpath>
+            <xpath expr="//page[@name='other_info']" position="after">
+                <page string="Description Line">
+                    <field name="description_line">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                        </tree>
+                    </field>
+                    <group>
+                        <group>
+                            <field name="recieved_by"/>
+                            <field name="prepared_by"/>
+                        </group>
+                        <group>
+
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='quantity']" position="before">
+                <field name="invoice_formate_type" invisible="1"/>
+                <field name="normal_working_hours" attrs="{'readonly':[('invoice_formate_type','!=','manpower')]}"/>
+                <field name="over_time_hours" attrs="{'readonly':[('invoice_formate_type','!=','manpower')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']//tree//field[@name='name']" position="before">
+                <field name="invoice_formate_type" invisible="1"/>
+                <field name="normal_working_hours" attrs="{'readonly':[('invoice_formate_type','!=','manpower')]}" invisible="1"/>
+                <field name="over_time_hours" attrs="{'readonly':[('invoice_formate_type','!=','manpower')]}" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                <attribute name="context">{'default_move_type': context.get('default_move_type'), 'journal_id': journal_id, 'default_partner_id': commercial_partner_id, 'default_currency_id': currency_id or company_currency_id,'default_invoice_formate_type':invoice_formate_type}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
